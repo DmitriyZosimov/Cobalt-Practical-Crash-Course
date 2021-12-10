@@ -1,0 +1,15 @@
+<ivy-module version="1.0">
+    <info
+            organisation="com.cobaltcourse.web"
+            module="web"
+            status="integration"/>
+    <dependencies>
+        <dependency org="org.springframework" name="spring-webmvc" rev="4.3.30.RELEASE"/>
+        <dependency org="org.springframework" name="spring-web" rev="4.3.30.RELEASE"/>
+        <dependency org="org.springframework" name="spring-context" rev="4.3.30.RELEASE"/>
+        <dependency org="org.springframework" name="spring-test" rev="4.3.30.RELEASE"/>
+        <dependency org="junit" name="junit" rev="4.12"/>
+        <dependency org="org.mockito" name="mockito-core" rev="4.1.0"/>
+
+    </dependencies>
+</ivy-module>

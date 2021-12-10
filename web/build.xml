@@ -1,0 +1,4 @@
+<project name="web" default="compile">
+    <property file="build.properties"/>
+    <import file="${projects.dir}/common.xml"/>
+</project>
