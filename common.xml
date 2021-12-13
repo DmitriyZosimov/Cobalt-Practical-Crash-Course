@@ -1,5 +1,17 @@
 <project name="common" xmlns:ivy="antlib:org.apache.ivy.ant">
-    <property file="build.properties"/>
+    <property file="../build.properties"/>
+
+    <property name="build.number" value="0.1"/>
+
+    <echo message="*************************************" />
+    <echo message="* Project Name: ${ant.project.name}" />
+    <echo message="* Project Version: ${build.number}" />
+    <echo message="*************************************" />
+    <property name="project.name" value="${ant.project.name}" />
+
+    <!-- Create directory into which artifacts will be pulled from Artifactory -->
+    <mkdir dir="${lib.dir}" />
+    <mkdir dir="${lib.dir.test}" />
 
     <property name="ivy.jar.dir" value="${user.home}/.ivy2/jars"/>
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
@@ -14,62 +26,65 @@
     </target>
 
     <path id="lib.path.id">
+        <pathelement location="${build.classes.dir}"/>
         <fileset dir="${lib.dir}"/>
+    </path>
+    <path id="test.path.id">
+        <pathelement location="${build.test.dir}"/>
+        <path refid="lib.path.id"/>
     </path>
     <path id="run.path.id">
         <path refid="lib.path.id"/>
-        <path location="${classes.dir}"/>
+        <path location="${build.classes.dir}"/>
     </path>
-
-    <!-- setup ivy default configuration with some custom info -->
-<!--    <property name="ivy.shared.default.root" value="${repository.dir}/shared"/>-->
-<!--    <property name="ivy.local.default.root" value="${repository.dir}/local"/>-->
-<!--    <property name="ivy.local.default.ivy.pattern" value="[module]/[revision]/ivy.xml"/>-->
-<!--    <property name="ivy.local.default.artifact.pattern" value="[module]/[revision]/[artifact].[ext]"/>-->
-
-    <!-- here is how we would have configured ivy if we had our own ivysettings file
-         <ivy:settings file="${common.dir}/ivysettings.xml"/>
-    -->
 
     <!-- =================================
          target: resolve
          ================================= -->
-    <target name="resolve" depends="clean-lib" description="--> resolve and retrieve dependencies with ivy">
+    <target name="resolve" description="--> resolve and retrieve dependencies with ivy">
+<!--        <ivy:settings/>-->
+        <echo message="--> resolve and retrieve dependencies with ivy"/>
         <ivy:resolve file="${basedir}/ivy.xml"/>
-        <ivy:retrieve/>
+        <ivy:retrieve pattern="${lib.dir}/[artifact]-[revision].[ext]" sync="true" type="jar, bundle"/>
+<!--        <echo message="&ndash;&gt; resolve and retrieve dependencies with test-ivy"/>-->
+<!--        <ivy:resolve file="${basedir}/test-ivy.xml"/>-->
+<!--        <ivy:retrieve pattern="${lib.dir.test}/[artifact]-[revision].[ext]" sync="true" type="jar, bundle"/>-->
     </target>
 
     <!-- =================================
          target: report
          ================================= -->
     <target name="report" depends="resolve" description="--> generates a report of dependencies">
-        <ivy:report todir="${build.dir}"/>
+        <ivy:report todir="${report.dependencies.dir}"/>
     </target>
 
     <!-- =================================
          target: compile
          ================================= -->
     <target name="compile" depends="resolve" description="--> compile the project">
-        <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="lib.path.id" debug="true" includeAntRuntime="false"/>
+        <mkdir dir="${build.classes.dir}"/>
+        <javac srcdir="${src.main.dir}" destdir="${build.classes.dir}" classpathref="lib.path.id" debug="true"
+               includeAntRuntime="false" includes="**/*.java"/>
     </target>
 
     <!-- =================================
-         target: run
+         target: test-compile
          ================================= -->
-    <target name="run" depends="version, compile" description="--> compile and run the project">
-        <java classpathref="run.path.id" classname="${main.class.name}"/>
+    <target name="test-compile" depends="compile" description="--> test compile the project">
+        <mkdir dir="${build.test.dir}"/>
+        <javac srcdir="${test.src.dir}" destdir="${build.test.dir}" classpathref="test.path.id" debug="true"
+               includeAntRuntime="false" includes="**/*.java"/>
     </target>
 
     <target name="ivy-new-version" depends="load-ivy" unless="ivy.new.revision">
         <!-- default module version prefix value -->
-        <property name="module.version.prefix" value="${module.version.target}-dev-b"/>
+        <property name="module.version.prefix" value="${module.version.target}"/>
 
         <!-- asks to ivy an available version number -->
         <ivy:info file="${ivy.file}"/>
         <ivy:buildnumber
                 organisation="${ivy.organisation}" module="${ivy.module}"
-                revision="${module.version.prefix}" defaultBuildNumber="1" revSep=""/>
+                revision="${module.version.prefix}" defaultBuildNumber="0" revSep="."/>
     </target>
 
     <target name="local-version">
@@ -81,11 +96,11 @@
 
     <target name="version" depends="ivy-new-version">
         <!-- create version file in classpath for later inclusion in jar -->
-        <mkdir dir="${classes.dir}"/>
-        <echo message="version=${ivy.new.revision}" file="${classes.dir}/${ant.project.name}.properties" append="false"/>
+        <mkdir dir="${build.classes.dir}"/>
+        <echo message="version=${ivy.new.revision}" file="${build.classes.dir}/${ant.project.name}.properties" append="false"/>
 
         <!-- load generated version properties file -->
-        <property file="${classes.dir}/${ant.project.name}.properties"/>
+        <property file="${build.classes.dir}/${ant.project.name}.properties"/>
     </target>
 
     <!-- =================================
@@ -93,10 +108,10 @@
          ================================= -->
     <target name="jar" depends="version, compile" description="--> make a jar file for this project">
         <jar destfile="${jar.file}">
-            <fileset dir="${classes.dir}"/>
+            <fileset dir="${build.classes.dir}"/>
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
-                <attribute name="Build-Version" value="${version}"/>
+                <attribute name="Build-Version" value="${build.number}"/>
             </manifest>
         </jar>
     </target>
@@ -138,7 +153,11 @@
          target: clean-lib
          ================================= -->
     <target name="clean-lib" description="--> clean the project libraries directory (dependencies)">
-        <delete includeemptydirs="true" dir="${lib.dir}"/>
+        <echo message="--> clean the project libraries directory (dependencies)"/>
+        <delete includeemptydirs="true">
+            <fileset dir="${lib.dir}" includes="*.jar"/>
+            <fileset dir="${lib.dir.test}" includes="*.jar"/>
+        </delete>
     </target>
 
     <!-- =================================
@@ -152,4 +171,24 @@
          target: clean
          ================================= -->
     <target name="clean" depends="clean-build,clean-lib" description="--> clean the project"/>
+
+    <!-- =================================
+     target: test
+     ================================= -->
+    <target name="test" depends="test-compile">
+        <property name="myclasspath" refid="test.path.id" />
+        <echo message="classpath= ${myclasspath}" />
+        <mkdir dir="${test.report}" />
+        <junit printsummary="yes">
+            <classpath>
+                <path refid="test.path.id"/>
+            </classpath>
+            <formatter type="xml" />
+            <batchtest fork="yes" todir="${test.report}">
+                <fileset dir="${test.src.dir}">
+                    <include name="**/*Test.java" />
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
 </project>

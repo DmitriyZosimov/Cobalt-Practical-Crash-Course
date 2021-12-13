@@ -4,11 +4,7 @@ package com.cobaltcourse.web;
 import com.cobaltcourse.web.config.WebConfiguration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +27,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = WebConfiguration.class)
-public class MainControllerMockito implements PathForTest{
+public class MainControllerTest implements PathForTest{
 
     private static final String PATH = PathForTest.getPath();
 
@@ -92,10 +88,10 @@ public class MainControllerMockito implements PathForTest{
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
         List<String> links = mapper.readValue(response.getContentAsString(), new TypeReference<List<String>>() {
         });
-        Assertions.assertFalse(links.isEmpty());
+        Assert.assertFalse(links.isEmpty());
     }
 
     //TODO: check on windows how it works
@@ -107,10 +103,10 @@ public class MainControllerMockito implements PathForTest{
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
         String text = mapper.readValue(response.getContentAsString(), new TypeReference<String>() {
         });
-        Assertions.assertNotNull(text);
+        Assert.assertNotNull(text);
     }
 
     @Test
@@ -121,7 +117,7 @@ public class MainControllerMockito implements PathForTest{
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
     }
 
     @Test
@@ -132,7 +128,7 @@ public class MainControllerMockito implements PathForTest{
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
     }
 
     //createFileOrDir method
@@ -143,9 +139,9 @@ public class MainControllerMockito implements PathForTest{
                 .param("name", "created folder"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
         File createdFolder = new File("src/test/resource/test dir with spaces/created folder");
-        Assertions.assertTrue(createdFolder.exists());
+        Assert.assertTrue(createdFolder.exists());
 
         createdFolder.delete();
     }
@@ -154,14 +150,14 @@ public class MainControllerMockito implements PathForTest{
     public void shouldReturn400WhenFolderAlreadyExists() throws Exception {
         File createdFolder = new File("src/test/resource/test dir with spaces/created folder");
         createdFolder.mkdirs();
-        Assertions.assertTrue(createdFolder.exists());
+        Assert.assertTrue(createdFolder.exists());
 
         file = new File("src/test/resource/test dir with spaces");
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.post(file.getAbsolutePath())
                 .param("name", "created folder"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
 
         createdFolder.delete();
     }
@@ -174,9 +170,9 @@ public class MainControllerMockito implements PathForTest{
                 .param("file", "true"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
         File createdFile = new File("src/test/resource/test dir with spaces/new file.txt");
-        Assertions.assertTrue(createdFile.exists());
+        Assert.assertTrue(createdFile.exists());
 
         createdFile.delete();
     }
@@ -185,7 +181,7 @@ public class MainControllerMockito implements PathForTest{
     public void shouldReturn400WhenFileAlreadyExists() throws Exception {
         File createdFile = new File("src/test/resource/test dir with spaces/new file.txt");
         createdFile.createNewFile();
-        Assertions.assertTrue(createdFile.exists());
+        Assert.assertTrue(createdFile.exists());
 
         file = new File("src/test/resource/test dir with spaces");
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.post(file.getAbsolutePath())
@@ -193,7 +189,7 @@ public class MainControllerMockito implements PathForTest{
                 .param("file", "true"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
 
         createdFile.delete();
     }
@@ -203,15 +199,15 @@ public class MainControllerMockito implements PathForTest{
     public void shouldReturn200AfterDeletingFolder() throws Exception {
         File createdFolder = new File("src/test/resource/test dir with spaces/created folder");
         createdFolder.mkdirs();
-        Assertions.assertTrue(createdFolder.exists());
+        Assert.assertTrue(createdFolder.exists());
 
         file = new File("src/test/resource/test dir with spaces/created folder");
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.delete(file.getAbsolutePath()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
         File deletedFolder = new File("src/test/resource/test dir with spaces/created folder");
-        Assertions.assertFalse(deletedFolder.exists());
+        Assert.assertFalse(deletedFolder.exists());
     }
 
     @Test
@@ -220,24 +216,24 @@ public class MainControllerMockito implements PathForTest{
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.delete(file.getAbsolutePath()))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
         File deletedFolder = new File("src/test/resource/test dir with spaces/created folder");
-        Assertions.assertFalse(deletedFolder.exists());
+        Assert.assertFalse(deletedFolder.exists());
     }
 
     @Test
     public void shouldReturn200AfterDeletingFile() throws Exception {
         File createdFolder = new File("src/test/resource/test dir with spaces/new file.txt");
         createdFolder.createNewFile();
-        Assertions.assertTrue(createdFolder.exists());
+        Assert.assertTrue(createdFolder.exists());
 
         file = new File("src/test/resource/test dir with spaces/new file.txt");
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.delete(file.getAbsolutePath()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
         File deletedFolder = new File("src/test/resource/test dir with spaces/new file.txt");
-        Assertions.assertFalse(deletedFolder.exists());
+        Assert.assertFalse(deletedFolder.exists());
     }
 
     @Test
@@ -246,8 +242,8 @@ public class MainControllerMockito implements PathForTest{
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.delete(file.getAbsolutePath() + "/"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn().getResponse();
-        Assertions.assertNotNull(response);
+        Assert.assertNotNull(response);
         File deletedFolder = new File("src/test/resource/test dir with spaces/new file.txt");
-        Assertions.assertFalse(deletedFolder.exists());
+        Assert.assertFalse(deletedFolder.exists());
     }
 }
