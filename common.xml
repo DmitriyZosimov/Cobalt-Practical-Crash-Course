@@ -11,7 +11,6 @@
 
     <!-- Create directory into which artifacts will be pulled from Artifactory -->
     <mkdir dir="${lib.dir}" />
-    <mkdir dir="${lib.dir.test}" />
 
     <property name="ivy.jar.dir" value="${user.home}/.ivy2/jars"/>
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
@@ -87,13 +86,6 @@
                 revision="${module.version.prefix}" defaultBuildNumber="0" revSep="."/>
     </target>
 
-    <target name="local-version">
-        <tstamp>
-            <format property="now" pattern="yyyyMMddHHmmss"/>
-        </tstamp>
-        <property name="ivy.new.revision" value="${module.version.target}-local-${now}"/>
-    </target>
-
     <target name="version" depends="ivy-new-version">
         <!-- create version file in classpath for later inclusion in jar -->
         <mkdir dir="${build.classes.dir}"/>
@@ -128,35 +120,12 @@
     </target>
 
     <!-- =================================
-         target: publish-local
-         ================================= -->
-    <target name="publish-local" depends="local-version, jar" description="--> publish this project in the local ivy repository">
-        <ivy:publish artifactspattern="${build.dir}/[artifact].[ext]"
-                     resolver="local"
-                     pubrevision="${version}"
-                     pubdate="${now}"
-                     status="integration"
-                     forcedeliver="true"/>
-        <echo message="project ${ant.project.name} published locally with version ${version}"/>
-    </target>
-
-    <!-- =================================
-         target: clean-local
-         ================================= -->
-    <target name="clean-local" depends="load-ivy"
-            description="--> cleans the local repository for the current module">
-        <ivy:info file="${ivy.file}"/>
-        <delete dir="${ivy.local.default.root}/${ivy.organisation}/${ivy.module}"/>
-    </target>
-
-    <!-- =================================
          target: clean-lib
          ================================= -->
     <target name="clean-lib" description="--> clean the project libraries directory (dependencies)">
         <echo message="--> clean the project libraries directory (dependencies)"/>
         <delete includeemptydirs="true">
             <fileset dir="${lib.dir}" includes="*.jar"/>
-            <fileset dir="${lib.dir.test}" includes="*.jar"/>
         </delete>
     </target>
 
@@ -173,8 +142,8 @@
     <target name="clean" depends="clean-build,clean-lib" description="--> clean the project"/>
 
     <!-- =================================
-     target: test
-     ================================= -->
+         target: test
+         ================================= -->
     <target name="test" depends="test-compile">
         <property name="myclasspath" refid="test.path.id" />
         <echo message="classpath= ${myclasspath}" />
