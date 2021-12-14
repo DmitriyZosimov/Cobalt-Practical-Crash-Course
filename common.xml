@@ -140,7 +140,7 @@
     <!-- =================================
          target: jar
          ================================= -->
-    <target name="jar" depends="version, compile, copy-resources" description="--> make a jar file for this project">
+    <target name="jar" depends="version, compile" description="--> make a jar file for this project">
         <jar destfile="${jar.file}">
             <fileset dir="${build.classes.dir}"/>
             <manifest>
@@ -153,7 +153,7 @@
     <!-- =================================
          target: package
          ================================= -->
-    <target name="package" depends="clean, compile, copy-resources, test" description="--> create a war file">
+    <target name="package" depends="clean, compile, test" description="--> create a war file">
         <war destfile="${build.dir}/libs/cobalt-course.web.war" webxml="${web.dir}/WEB-INF/web.xml">
             <webinf dir="${web.dir}/WEB-INF" />
             <lib dir="${lib.dir}" />
