@@ -75,6 +75,23 @@
                includeAntRuntime="false" includes="**/*.java"/>
     </target>
 
+    <!-- =================================
+         target: copy-resources
+         ================================= -->
+    <!-- Copy *.xml or *.properties from ${resources.dir} to ${build.classes.dir} -->
+    <target name="copy-resources"
+            description="--> copy Java resources like xml and properties files">
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${resources.dir}">
+                <include name="**/*.xml" />
+                <include name="**/*.properties" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- =================================
+         target: ivy-new-version
+         ================================= -->
     <target name="ivy-new-version" depends="load-ivy" unless="ivy.new.revision">
         <!-- default module version prefix value -->
         <property name="module.version.prefix" value="${module.version.target}"/>
@@ -98,7 +115,7 @@
     <!-- =================================
          target: jar
          ================================= -->
-    <target name="jar" depends="version, compile" description="--> make a jar file for this project">
+    <target name="jar" depends="version, compile, copy-resources" description="--> make a jar file for this project">
         <jar destfile="${jar.file}">
             <fileset dir="${build.classes.dir}"/>
             <manifest>
