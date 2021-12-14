@@ -1,1 +1,2 @@
+[![Java Web CI (Ubuntu)](https://github.com/DmitriyZosimov/Cobalt-Practical-Crash-Course/actions/workflows/ant.yml/badge.svg)](https://github.com/DmitriyZosimov/Cobalt-Practical-Crash-Course/actions/workflows/ant.yml) [![Web Tests with Ant CI](https://github.com/DmitriyZosimov/Cobalt-Practical-Crash-Course/actions/workflows/test.yml/badge.svg)](https://github.com/DmitriyZosimov/Cobalt-Practical-Crash-Course/actions/workflows/test.yml)
 # Cobalt-Practical-Crash-Course
