@@ -40,7 +40,7 @@
     <!-- =================================
          target: resolve
          ================================= -->
-    <target name="resolve" description="--> resolve and retrieve dependencies with ivy">
+    <target name="resolve" depends="clean-lib" description="--> resolve and retrieve dependencies with ivy">
 <!--        <ivy:settings/>-->
         <echo message="--> resolve and retrieve dependencies with ivy"/>
         <ivy:resolve file="${basedir}/ivy.xml"/>
@@ -103,6 +103,9 @@
                 revision="${module.version.prefix}" defaultBuildNumber="0" revSep="."/>
     </target>
 
+    <!-- =================================
+         target: version
+         ================================= -->
     <target name="version" depends="ivy-new-version">
         <!-- create version file in classpath for later inclusion in jar -->
         <mkdir dir="${build.classes.dir}"/>
@@ -123,6 +126,19 @@
                 <attribute name="Build-Version" value="${build.number}"/>
             </manifest>
         </jar>
+    </target>
+
+    <!-- =================================
+         target: package
+         ================================= -->
+    <target name="package" depends="clean, compile, copy-resources" description="--> create a war file">
+        <war destfile="${build.dir}/libs/cobalt-course.web.war" webxml="${web.dir}/WEB-INF/web.xml">
+            <webinf dir="${web.dir}/WEB-INF" />
+            <lib dir="${lib.dir}" />
+            <zipfileset dir="${build.classes.dir}" prefix="WEB-INF/classes" >
+                <include name="**/*"/>
+            </zipfileset>
+        </war>
     </target>
 
     <!-- =================================
