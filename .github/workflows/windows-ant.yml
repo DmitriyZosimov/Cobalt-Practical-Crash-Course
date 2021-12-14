@@ -25,3 +25,5 @@ jobs:
       run: ant init-ivy -buildfile web/build.xml
     - name: Build with Ant
       run: ant -noinput -buildfile web/build.xml
+    - name: Tests with Ant
+        run: ant test -buildfile web/build.xml
