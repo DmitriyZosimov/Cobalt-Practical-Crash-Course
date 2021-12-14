@@ -22,7 +22,7 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
     - name: Load Ivy
-      run: ant load-ivy -buildfile web/build.xml
+      run: ant init-ivy -buildfile web/build.xml
     - name: Compile with Ant
       run: ant -noinput -buildfile web/build.xml
     - name: War with Ant
