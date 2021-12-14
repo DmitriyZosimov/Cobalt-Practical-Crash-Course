@@ -23,7 +23,7 @@ public class MainController {
 
     //TODO: add to all request "/" into the end, because .t and .txt ends generate exception
     @RequestMapping(method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity main(HttpServletRequest httpRequest) {
         String url = httpRequest.getRequestURI().replaceAll("%20", " ");
         File file = new File(url);
