@@ -131,7 +131,7 @@
     <!-- =================================
          target: package
          ================================= -->
-    <target name="package" depends="clean, compile, copy-resources" description="--> create a war file">
+    <target name="package" depends="clean, compile, copy-resources, test" description="--> create a war file">
         <war destfile="${build.dir}/libs/cobalt-course.web.war" webxml="${web.dir}/WEB-INF/web.xml">
             <webinf dir="${web.dir}/WEB-INF" />
             <lib dir="${lib.dir}" />
