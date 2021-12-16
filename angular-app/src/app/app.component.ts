@@ -8,4 +8,11 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'angular-app';
 
+  onActivate($event): void {
+    console.log('Activated:', $event);
+  }
+
+  onDeactivate($event): void {
+    console.log('Deactivated:', $event);
+  }
 }

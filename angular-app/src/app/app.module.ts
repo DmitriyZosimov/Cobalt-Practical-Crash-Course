@@ -7,6 +7,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MainModule } from './main/main.module';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
+import {HttpClientModule} from "@angular/common/http";
+import {MainService} from "./services/main.service";
 
 @NgModule({
   declarations: [
@@ -18,9 +20,10 @@ import { NavigationComponent } from './components/navigation/navigation.componen
     BrowserModule,
     AppRoutingModule,
     NgbModule,
-    MainModule
+    MainModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [MainService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

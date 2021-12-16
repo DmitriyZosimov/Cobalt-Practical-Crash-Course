@@ -1,0 +1,16 @@
+<header>
+  <nav id="main-header"
+       class="py-1 mb-3 navbar navbar-expand-sm navbar-light bg-light text-dark">
+    <span class="navbar-brand text-uppercase mr-auto">File system</span>
+    <ul class="navbar-nav float-right">
+      <li class="nav-item">
+        <a class="btn btn-light"
+           ngbTooltip="Add department"
+           placement="bottom" (click)="onCreateFolder('home')">
+          <i class="bi-plus"></i> <span
+          class="d-none d-sm-inline">Create Folder</span></a>
+      </li>
+    </ul>
+  </nav>
+</header>
+<router-outlet></router-outlet>
