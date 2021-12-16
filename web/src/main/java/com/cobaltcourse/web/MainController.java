@@ -3,10 +3,7 @@ package com.cobaltcourse.web;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -14,9 +11,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/**")
 public class MainController {
@@ -26,11 +25,12 @@ public class MainController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity main(HttpServletRequest httpRequest) {
         String url = httpRequest.getRequestURI().replaceAll("%20", " ");
+        System.out.println("URL: ---------> " + url);
         File file = new File(url);
         if(file.isDirectory()) {
             return new ResponseEntity<List<String>>(getLinks(file), HttpStatus.OK);
         } else if (file.isFile()) {
-            return new ResponseEntity<String>(getFile(file), HttpStatus.OK);
+            return new ResponseEntity<List<String>>(getFile(file), HttpStatus.OK);
         } if(!file.exists()) {
             return new ResponseEntity<String>("The file or directory don't exist", HttpStatus.NOT_FOUND);
         } else {
@@ -43,7 +43,7 @@ public class MainController {
         return Arrays.asList(files);
     }
 
-    private String getFile(File file) {
+    private List<String> getFile(File file) {
         StringBuilder stringBuilder = new StringBuilder();
         Scanner scanner = null;
         try {
@@ -60,7 +60,7 @@ public class MainController {
                 scanner.close();
              }
         }
-        return stringBuilder.toString();
+        return Collections.singletonList(stringBuilder.toString());
     }
 
     @RequestMapping(method = RequestMethod.POST)
