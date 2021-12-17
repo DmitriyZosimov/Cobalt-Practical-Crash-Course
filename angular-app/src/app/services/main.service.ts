@@ -35,8 +35,18 @@ export class MainService {
     if(model.isFile === null || model.isFile === undefined) {
       model.isFile = false;
     }
-    console.log('service URL: ' + `${this.basePath}${url}`);
+    console.log('mainService POST URL: ' + `${this.basePath}${url}`);
     this.httpClient.post(`${this.basePath}${url}`, null, {params: {name: model.name, file: model.isFile}})
+      .pipe(
+        map(response => response || []),
+        tap(response => console.log(JSON.stringify(response))),
+        catchError(this.handleError)
+      ).subscribe();
+  }
+
+  public delete(url: any) {
+    console.log('mainService DELETE URL: ' + `${this.basePath}${url}`);
+    this.httpClient.delete(`${this.basePath}${url}`)
       .pipe(
         map(response => response || []),
         tap(response => console.log(JSON.stringify(response))),

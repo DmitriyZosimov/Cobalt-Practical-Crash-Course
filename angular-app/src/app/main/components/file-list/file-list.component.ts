@@ -40,4 +40,9 @@ export class FileListComponent implements OnInit {
     this.router.navigate(link);
   }
 
+  delete(file: any) {
+    this.url = this.router.url + '/' + file;
+    console.log("DELETE ----->> " + this.url);
+    this.mainService.delete(this.url);
+  }
 }
