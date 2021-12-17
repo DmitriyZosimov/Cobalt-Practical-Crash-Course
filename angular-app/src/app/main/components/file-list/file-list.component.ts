@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MainService} from '../../../services/main.service';
 import {Router} from "@angular/router";
-import {HttpClient, HttpRequest} from "@angular/common/http";
 
 @Component({
   templateUrl: './file-list.component.html',
@@ -11,6 +10,7 @@ export class FileListComponent implements OnInit {
 
   files;
   url;
+  header;
 
   constructor(
     private mainService: MainService,
@@ -19,21 +19,20 @@ export class FileListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.files = this.mainService.getFiles(this.router.url);
+    this.mainService.getFiles(this.router.url)
+      .subscribe(resp => {
+        this.header = (resp.headers.get("File-Content") == "true");
+        this.files = resp.body;
+      });
     this.url = this.router.url;
-    console.log('ngOnInit router URL: ' + this.router.url);
-    console.log('ngOnInit URL: ' + this.url);
   }
 
   onLink(url: any): void {
-    console.log('onLink URL: ' + this.url);
-    console.log('onLink router URL: ' + this.router.url);
-    console.log('onLink param URL: ' + url);
     this.url = this.router.url + '/' + url;
-    this.files = this.mainService.getFiles(this.url);
-
-    console.log('onLink end router URL: ' + this.router.url);
-    console.log('onLink end URL: ' + this.url);
+    this.mainService.getFiles(this.url).subscribe(resp => {
+      this.header = (resp.headers.get("File-Content") == "true");
+      this.files = resp.body;
+    });
   }
 
   onCreateFolder(name: string): void {

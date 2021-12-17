@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {catchError, map, tap} from 'rxjs/operators';
 import {environment} from "../../environments/environment";
@@ -14,9 +14,9 @@ export class MainService {
   constructor(protected httpClient: HttpClient) {
   }
 
-  public getFiles(url: string): Observable<Array<string>> {
+  public getFiles(url: string): Observable<HttpResponse<Array<string>>> {
     console.log('service URL: ' + `${this.basePath}${url}`);
-    return this.httpClient.get<Array<string>>(`${this.basePath}${url}/`)
+    return this.httpClient.get<Array<string>>(`${this.basePath}${url}/`, {observe: 'response'})
       .pipe(
         map(response => response || []),
         tap(response => console.log(JSON.stringify(response))),

@@ -1,5 +1,6 @@
 package com.cobaltcourse.web;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +16,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-@CrossOrigin
+@CrossOrigin(exposedHeaders = {"File-Content"})
 @RestController
 @RequestMapping("/**")
 public class MainController {
 
-    //TODO: add to all request "/" into the end, because .t and .txt ends generate exception
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity main(HttpServletRequest httpRequest) {
@@ -28,9 +28,13 @@ public class MainController {
         System.out.println("URL: ---------> " + url);
         File file = new File(url);
         if(file.isDirectory()) {
-            return new ResponseEntity<List<String>>(getLinks(file), HttpStatus.OK);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.put("File-Content", Collections.singletonList("false"));
+            return new ResponseEntity<List<String>>(getLinks(file), httpHeaders, HttpStatus.OK);
         } else if (file.isFile()) {
-            return new ResponseEntity<List<String>>(getFile(file), HttpStatus.OK);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.put("File-Content", Collections.singletonList("true"));
+            return new ResponseEntity<List<String>>(getFile(file), httpHeaders, HttpStatus.OK);
         } if(!file.exists()) {
             return new ResponseEntity<String>("The file or directory don't exist", HttpStatus.NOT_FOUND);
         } else {
