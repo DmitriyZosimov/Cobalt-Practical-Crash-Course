@@ -16,11 +16,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-@CrossOrigin(exposedHeaders = {"File-Content"})
+@CrossOrigin
 @RestController
 @RequestMapping("/**")
 public class MainController {
 
+    @CrossOrigin(exposedHeaders = {"File-Content"})
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity main(HttpServletRequest httpRequest) {
@@ -67,6 +68,7 @@ public class MainController {
         return Collections.singletonList(stringBuilder.toString());
     }
 
+    @CrossOrigin(methods = RequestMethod.POST)
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity createFileOrDir(@RequestParam("name") String name,
                                           @RequestParam(value = "file", required = false) Boolean isFile,
