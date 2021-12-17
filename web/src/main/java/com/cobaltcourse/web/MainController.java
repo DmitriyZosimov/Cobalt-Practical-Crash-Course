@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/**")
 public class MainController {
@@ -89,6 +88,7 @@ public class MainController {
         }
     }
 
+    @CrossOrigin(methods = RequestMethod.DELETE)
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity deleteFileOrDir(HttpServletRequest httpRequest) {
         String url = httpRequest.getRequestURI().replaceAll("%20", " ");
