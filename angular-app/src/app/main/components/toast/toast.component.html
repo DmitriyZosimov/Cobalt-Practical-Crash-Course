@@ -1,0 +1,30 @@
+<div class="d-flex justify-content-end mr-3 mb-1">
+  <ngb-toast
+    *ngFor="let toast of toastService.toasts"
+    [header]="toast.headertext"
+    [class]="toast.classname"
+    [autohide]="toast.autohide"
+    [delay]="toast.delay || 5000"
+    (hide)="toastService.remove(toast)"
+  >
+    <ng-template [ngIf]="isTemplate(toast)" [ngIfElse]="text">
+      <ng-template [ngTemplateOutlet]="toast.textOrTpl">
+      </ng-template>
+    </ng-template>
+
+    <ng-template #text>
+      <div class="form-group">
+        <label for="name">{{toast.textOrTpl}}</label>
+        <input id="name" class="form-control form-control-sm" type="text" placeholder="name"
+               [(ngModel)]="model.name"/>
+      </div>
+      <ng-template [ngIf]="toast.isFile" [ngIfThen]="fileButton" [ngIfElse]="folderButton"></ng-template>
+    </ng-template>
+    <ng-template #fileButton>
+      <button type="submit" class="btn btn-primary btn-sm" (click)="onFileSubmit(this.toast)">Submit</button>
+    </ng-template>
+    <ng-template #folderButton>
+      <button type="submit" class="btn btn-primary btn-sm" (click)="onFolderSubmit(this.toast)">Submit</button>
+    </ng-template>
+  </ngb-toast>
+</div>

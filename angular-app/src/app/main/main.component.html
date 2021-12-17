@@ -4,13 +4,27 @@
     <span class="navbar-brand text-uppercase mr-auto">File system</span>
     <ul class="navbar-nav float-right">
       <li class="nav-item">
-        <a class="btn btn-light"
-           ngbTooltip="Add department"
-           placement="bottom" (click)="onCreateFolder('home')">
-          <i class="bi-plus"></i> <span
-          class="d-none d-sm-inline">Create Folder</span></a>
+        <button type="button"
+                class="btn btn-light"
+                ngbTooltip="Create File"
+                placement="bottom"
+                (click)="showFileToast()">
+          <i class="bi-plus"></i>
+          <span class="d-none d-sm-inline">Create File</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button"
+                class="btn btn-light"
+                ngbTooltip="Create Folder"
+                placement="bottom"
+                (click)="showFolderToast()">
+          <i class="bi-plus"></i>
+          <span class="d-none d-sm-inline">Create Folder</span>
+        </button>
       </li>
     </ul>
   </nav>
+  <app-toast></app-toast>
 </header>
 <router-outlet></router-outlet>
