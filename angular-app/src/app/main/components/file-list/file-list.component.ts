@@ -35,11 +35,6 @@ export class FileListComponent implements OnInit {
     });
   }
 
-  onCreateFolder(name: string): void {
-    const link = ['/**'];
-    this.router.navigate(link);
-  }
-
   delete(file: any) {
     this.url = this.router.url + '/' + file;
     console.log("DELETE ----->> " + this.url);
