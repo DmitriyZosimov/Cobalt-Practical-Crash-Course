@@ -1,0 +1,33 @@
+<section id="files">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <ng-template [ngIf]="header">
+            <div class="fw-normal text-start" *ngFor="let file of files">
+              <span>{{file}}</span>
+            </div>
+          </ng-template>
+          <ng-template [ngIf]="!header">
+            <div class="list-group" *ngFor="let file of files">
+              <div class="d-flex bd-highlight">
+                <div class="p-2 w-100 bd-highlight">
+                  <a [routerLink]="[url, file]" class="list-group-item list-group-item-action" (click)="onLink(file)"
+                  >{{file}}</a>
+                </div>
+                <div class="p-2 flex-shrink-1 bd-highlight">
+                  <button type="button"
+                          class="btn btn-light mx-auto"
+                          ngbTooltip="Delete"
+                          (click)="delete(file)">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
